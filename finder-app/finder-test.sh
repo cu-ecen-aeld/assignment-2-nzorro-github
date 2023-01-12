@@ -47,7 +47,9 @@ fi
 
 for i in $( seq 1 $NUMFILES)
 do
-	./writer.sh "$WRITEDIR/${username}$i.txt" "$WRITESTR"
+	#echo "Writing ${WRITESTR} to $WRITEDIR/${username}$i.txt"
+	touch "$WRITEDIR/${username}$i.txt"
+	./writer "$WRITEDIR/${username}$i.txt" "$WRITESTR"
 done
 
 OUTPUTSTRING=$(./finder.sh "$WRITEDIR" "$WRITESTR")
@@ -58,6 +60,6 @@ if [ $? -eq 0 ]; then
 	echo "success"
 	exit 0
 else
-	echo "failed: expected  ${MATCHSTR} in ${OUTPUTSTRING} but instead found"
+	echo "failed: expected  ${MATCHSTR} in output but instead found  ${OUTPUTSTRING}"
 	exit 1
 fi
