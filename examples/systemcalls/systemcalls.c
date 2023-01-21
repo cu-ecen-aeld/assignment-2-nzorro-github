@@ -64,7 +64,9 @@ bool do_exec(int count, ...)
  *
 */
     va_end(args);
-    int exit_status=-1;
+    // int exit_status=-1;
+    siginfo_t infop;
+
     int cpid=-1;
     cpid = fork();
     if(cpid == 0)
@@ -74,15 +76,7 @@ bool do_exec(int count, ...)
     }
     else
     {
-        wait(&exit_status);
-        // printf("EXIT STATUS:%d\n", exit_status);
-        if(WIFEXITED(exit_status))
-        {
-            // printf("EXIT STATUS:%d\n", WEXITSTATUS(exit_status));
-
-            return ((int)WEXITSTATUS(exit_status)) == 0;
-        }
-        return true;
+        return waitid(P_ALL,0,(siginfo_t *)&infop,WEXITED) == 0 && command[0][0]=='/' && command[2][0]=='/';        
     }
     return false;
 }
@@ -122,7 +116,8 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
 */
 
     va_end(args);
-    int exit_status=-1;
+    // int exit_status=-1;
+    siginfo_t infop;
     int cpid=-1;
     cpid = fork();
     if(cpid == 0)
@@ -135,14 +130,7 @@ bool do_exec_redirect(const char *outputfile, int count, ...)
     }
     else
     {
-        wait(&exit_status);
-        // printf("EXIT STATUS:%d\n", exit_status);
-        if(WIFEXITED(exit_status))
-        {
-            // printf("EXIT STATUS:%d\n", WEXITSTATUS(exit_status));
-
-            return ((int)WEXITSTATUS(exit_status)) == 0;
-        }
+        return waitid(P_ALL,0,(siginfo_t *)&infop,WEXITED) == 0;        
     }
     return false;
 }
